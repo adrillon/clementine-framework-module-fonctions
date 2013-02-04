@@ -34,28 +34,6 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
     }
 
     /**
-     * htmlspecialchars : wrapper pour htmlspecialchars afin de lui faire utiliser le bon encodage par defaut (celui du site, et non ISO-8859-1)
-     * 
-     * @param mixed $string 
-     * @param mixed $flags 
-     * @param mixed $encoding 
-     * @param mixed $double_encode 
-     * @access public
-     * @return void
-     */
-    public function htmlspecialchars ($string, $flags = ENT_COMPAT, $encoding = null, $double_encode = true)
-    {
-        if ($encoding === null) {
-            $encoding = mb_internal_encoding();
-        }
-        // php < 5.2.3 compatibility
-        if (!$double_encode) {
-            return htmlspecialchars($string, $flags, $encoding, $double_encode);
-        }
-        return htmlspecialchars($string, $flags, $encoding);
-    }
-
-    /**
      * html_entity_decode : wrapper pour html_entity_decode afin de lui faire utiliser le bon encodage par defaut (celui du site, et non ISO-8859-1)
      * 
      * @param mixed $string 
@@ -248,7 +226,7 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
     // =======================================
 
     /**
-     * ifSet : wrapper de isset pour les tableau notamment get post et cookie... à utiliser à la place de Clementine::$register['request']->GET, Clementine::$register['request']->POST et Clementine::$register['request']->COOKIE... afin d'eviter les failles basees sur l'utilisation de ces tableaux
+     * ifSet : wrapper de isset pour les tableau notamment get post et cookie... à utiliser à la place de Clementine::$register['request']['GET'], Clementine::$register['request']['POST'] et Clementine::$register['request']['COOKIE']... afin d'eviter les failles basees sur l'utilisation de ces tableaux
      * 
      * @param mixed $tableau 
      * @param mixed $key 
@@ -260,13 +238,13 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
         $bool = false;
         switch ($tableau) {
             case 'get' : 
-                $bool = isset(Clementine::$register['request']->GET[$key]);
+                $bool = isset(Clementine::$register['request']['GET'][$key]);
                 break;
             case 'post' : 
-                $bool = isset(Clementine::$register['request']->POST[$key]);
+                $bool = isset(Clementine::$register['request']['POST'][$key]);
                 break;
             case 'cookie' : 
-                $bool = isset(Clementine::$register['request']->COOKIE[$key]);
+                $bool = isset(Clementine::$register['request']['COOKIE'][$key]);
                 break;
             default :
                 if (is_array($tableau)) {
@@ -278,7 +256,7 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
     }
 
     /**
-     * ifGet : wrapper pour ifSetGet qui recupere un parametre dans Clementine::$register['request']->GET
+     * ifGet : wrapper pour ifSetGet qui recupere un parametre dans Clementine::$register['request']['GET']
      * 
      * @param mixed $type 
      * @param mixed $key 
@@ -292,11 +270,11 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
      */
     public function ifGet ($type, $key, $ifset = null, $ifnotset = null, $non_vide = 0, $trim = 0, $striptags = 1)
     {
-        return $this->ifSetGetGPC($type, Clementine::$register['request']->GET, $key, $ifset, $ifnotset, $non_vide, $trim, $striptags);
+        return $this->ifSetGetGPC($type, Clementine::$register['request']['GET'], $key, $ifset, $ifnotset, $non_vide, $trim, $striptags);
     }
 
     /**
-     * ifPost : wrapper pour ifSetGet qui recupere un parametre dans Clementine::$register['request']->POST
+     * ifPost : wrapper pour ifSetGet qui recupere un parametre dans Clementine::$register['request']['POST']
      * 
      * @param mixed $type 
      * @param mixed $key 
@@ -310,11 +288,11 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
      */
     public function ifPost ($type, $key, $ifset = null, $ifnotset = null, $non_vide = 0, $trim = 0, $striptags = 1)
     {
-        return $this->ifSetGetGPC($type, Clementine::$register['request']->POST, $key, $ifset, $ifnotset, $non_vide, $trim, $striptags);
+        return $this->ifSetGetGPC($type, Clementine::$register['request']['POST'], $key, $ifset, $ifnotset, $non_vide, $trim, $striptags);
     }
 
     /**
-     * ifCookie : wrapper pour ifSetGet qui recupere un parametre dans Clementine::$register['request']->COOKIE
+     * ifCookie : wrapper pour ifSetGet qui recupere un parametre dans Clementine::$register['request']['COOKIE']
      * 
      * @param mixed $type 
      * @param mixed $key 
@@ -328,11 +306,11 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
      */
     public function ifCookie ($type, $key, $ifset = null, $ifnotset = null, $non_vide = 0, $trim = 0, $striptags = 1)
     {
-        return $this->ifSetGetGPC($type, Clementine::$register['request']->COOKIE, $key, $ifset, $ifnotset, $non_vide, $trim, $striptags);
+        return $this->ifSetGetGPC($type, Clementine::$register['request']['COOKIE'], $key, $ifset, $ifnotset, $non_vide, $trim, $striptags);
     }
 
     /**
-     * ifSetGetGPC : wrapper pour ifSetGet qui recupere un parametre dans un tableau potentiellement dangereux, tel que Clementine::$register['request']->GET, Clementine::$register['request']->POST...
+     * ifSetGetGPC : wrapper pour ifSetGet qui recupere un parametre dans un tableau potentiellement dangereux, tel que Clementine::$register['request']['GET'], Clementine::$register['request']['POST']...
      * 
      * @param mixed $type 
      * @param mixed $key 
@@ -355,13 +333,7 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
         }
         $r = $this->ifSetGet($type, $tableau, $key, $ifset, $ifnotset, $non_vide, $trim, $striptags);
         if (!get_magic_quotes_gpc()) {
-            if ($type == 'array') {
-                foreach ($r as $subkey => $val) {
-                    $r[$subkey] = addslashes($r[$subkey]);
-                }
-            } else {
-                $r = addslashes($r);
-            }
+            $r = addslashes($r);
         }
         // EN AJAX, ATTENTION A L'ENCODAGE : pour s'assurer que les caractères accentués (ou le sigle euro par exemple) sont bien transmis, il FAUT encoder l'URL
         // En JAVASCRIPT on utilisera la fonction encodeURIComponent
@@ -384,7 +356,7 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
      * ifSetGet : fonction centrale de la recuperation de paramètres : recupere le parametre $key dans le tableau $tableau
      * 
      * @param mixed $type : force le typage
-     * @param mixed $tableau : Clementine::$register['request']->GET, Clementine::$register['request']->POST, ou Clementine::$register['request']->COOKIE... ou n'importe quel tableau
+     * @param mixed $tableau : Clementine::$register['request']['GET'], Clementine::$register['request']['POST'], ou Clementine::$register['request']['COOKIE']... ou n'importe quel tableau
      * @param mixed $key : nom du parametre à recuperer
      * @param mixed $ifset : valeur a récupérer a la place du paramètre si celui si existe bien dans $tableau
      * @param mixed $ifnotset : valeur a récupérer a la place du paramètre si celui si n'existe pas dans $tableau
@@ -480,14 +452,8 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
      */
     public function redirect ($url, $code_http = 302) 
     {
-        // si appel en CLI on affiche un message à la place
-        if (!isset($_SERVER['SERVER_NAME'])) {
-            echo ('Redirects with code ' . $code_http . ' to: ' . $url);
-            // echo('<script type="text/Javascript">setTimeout("document.location = \'' . $url . '\'", 3000);</script><noscript>Redirected to <a href="' . $url . '">' . $url . '</a></noscript>');
-        } else {
-            header('Location: ' . $url, true, $code_http);
-            // echo('<script type="text/Javascript">setTimeout("document.location = \'' . $url . '\'", 3000);</script><noscript>Redirected to <a href="' . $url . '">' . $url . '</a></noscript>');
-        }
+        header('Location: ' . $url, true, $code_http);
+        // echo('<script type="text/Javascript">setTimeout("document.location = \'' . $url . '\'", 3000);</script><noscript>Redirected to <a href="' . $url . '">' . $url . '</a></noscript>');
         die();
     }
 
@@ -590,55 +556,34 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
     public function get_max_filesize ()
     {
         $tab = array();
-        $tab[] = strtolower(ini_get('upload_max_filesize'));
-        $tab[] = strtolower(ini_get('post_max_size'));
-        $tab[] = strtolower(ini_get('memory_limit'));
+        $tab[] = strtoupper(ini_get('upload_max_filesize'));
+        $tab[] = strtoupper(ini_get('post_max_size'));
         // TODO : max_input_time ? comment le gérer ?
+        // TODO : memory_limit ? comment le gérer ?
         // on convertit tout en octets !
         $cnt_tab = count($tab);
         for ($i = 0; $i < $cnt_tab; ++$i) {
-            $tab[$i] = $this->convert_bytesize($tab[$i], 'humantobytes');
+            $unite = preg_replace('/[0-9]*/', '', $tab[$i]);
+            switch ($unite) {
+                case '' :
+                    break;
+                case 'K' :
+                    $tab[$i] = $tab[$i] * 1024;
+                    break;
+                case 'M' :
+                    $tab[$i] = $tab[$i] * 1024 * 1024;
+                    break;
+                case 'G' :
+                    $tab[$i] = $tab[$i] * 1024 * 1024 * 1024;
+                    break;
+                default :
+                    trigger_error('Unite inconnue dans la fonction utilisateur get_max_filesize()', E_USER_WARNING);
+                    break;
+            }
         }
         $min = min($tab);
         return $min;
     }
-
-    /**
-     * convert_bytesize : conversion nombre en octets <=> human readable
-     * 
-     * @param mixed $size : nombre a convertir
-     * @param string $way : sens de la conversion : bytes => human readable par defaut
-     * @param int $powunit : puissance a utiliser : 1000 par defaut (et non 1024)
-     * @access public
-     * @return void
-     */
-    public function convert_bytesize($size, $way = 'bytestohuman', $powunit = 1000)
-    {
-        $unites = array('b','k','m','g','t','p','e');
-        $unite = strtolower(substr(preg_replace('/[0-9]*/', '', $size), 0, 1));
-        $size = (int) $size;
-        if (!$unite) {
-            $unite = 'b';
-        }
-        if ($way == 'humantobytes') {
-            $rang_unite = array_search($unite, $unites);
-            if ($rang_unite !== false) {
-                return $size * pow($powunit, $rang_unite);
-            } else {
-                trigger_error('Unite inattendue dans la fonction utilisateur get_max_filesize()', E_USER_WARNING);
-                return false;
-            }
-        } else {
-            $i = floor(log($size, $powunit));
-            if (isset($unites[$i])) {
-                return $size / pow($powunit, ($i)) . $unites[$i];
-            } else {
-                trigger_error('Unite inconnue dans la fonction utilisateur get_max_filesize()', E_USER_WARNING);
-                return false;
-            }
-        }
-    }
-
 
     /**
      * est_email : renvoie true si $str ressemble bien à une adresse email (x@y.z)
@@ -649,7 +594,7 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
      */
     public function est_email ($str)
     {
-        return filter_var($str, FILTER_VALIDATE_EMAIL);
+        return preg_match('/^[a-z0-9\._+-]+@([a-z0-9-]+\.)+[[:alpha:]]+$/i', $str);
     }
 
     /**
@@ -687,45 +632,6 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
                                "yopmail.com" => 0);
         $ndd = explode('@', $email);
         return (isset($ndd[1]) && (isset($tab_blacklist[$ndd[1]])));
-    }
-
-    /**
-     * est_siret : renvoie vrai si le numéro est bien un numéro SIRET 
-     *            (ne sait pas gérer un SIRET comme P00200006 ou MONACOCONFO001)
-     * 
-     * @param mixed $siret 
-     * @access public
-     * @return void
-     */
-    public function est_siret($siret)
-    {
-        $siret = str_replace(' ', '', $siret);
-        // le SIRET doit contenir 14 caractères
-        if (strlen($siret) != 14) {
-            return false;
-        }
-        // le SIRET ne doit contenir que des chiffres
-        if (!is_numeric($siret)) {
-            return false;
-        }
-        // on prend chaque chiffre un par un. Si son index dans la chaîne est pair, on
-        // double sa valeur et si cette dernière est supérieure à 9, on lui retranche 9
-        // on ajoute cette valeur à la somme totale
-        $sum = 0;
-        for ($index = 0; $index < 14; ++$index) {
-            $number = (int) $siret[$index];
-            if (($index % 2) == 0) {
-                if (($number *= 2) > 9) {
-                    $number -= 9; 
-                }
-            }
-            $sum += $number;
-        }
-        // le numéro est valide si la somme des chiffres est multiple de 10
-        if (($sum % 10) != 0) {
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -773,20 +679,53 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
      * @access public
      * @return void
      */
-    public function envoie_mail ($dest, $exp, $societe, $titre, $message_text, $message_html = null, $style = null, $demande_ar = null, $anonymyze = false)
+    public function envoie_mail ($dest, $exp, $societe, $titre, $message_text, $message_html = null, $style = null, $demande_ar = null)
     {
-        $params = array(
-            'to'           => $dest,
-            'from'         => $exp,
-            'fromname'     => $societe,
-            'title'        => $titre,
-            'message_text' => $message_text,
-            'message_html' => $message_html,
-            'style'        => $style,
-            'receipt'      => $demande_ar,
-            'anonymize'    => $anonymyze
-        );
-        return $this->getHelper('mail')->send($params);
+        // Securite antispam : les emails ne doivent contenir que des caracteres mail et il ne doit pas y avoir de retours a la ligne avant le titre
+        $dest       = preg_replace("/[^a-zA-Z0-9@\._+-]/", "", $dest);
+        $exp        = preg_replace("/[^a-zA-Z0-9@\._+-]/", "", $exp);
+        $societe    = preg_replace("/;*/",  "", $societe);
+        $societe    = preg_replace("/\r*/", "", $societe);
+        $societe    = preg_replace("/\n*/", "", $societe);
+        $titre      = preg_replace("/\r*/", "", $titre);
+        $titre      = preg_replace("/\n*/", "", $titre);
+        // MIME BOUNDARY
+        $mime_boundary = "---- " . $societe . " ----" . md5(time());
+        // MAIL HEADERS
+        $headers  = "From: " . $societe . " <" . $exp . ">\n";
+        $headers .= "Reply-To: " . $societe . " <" . $exp . ">\n";
+        $headers .= "Return-Path: " . $societe . " <" . $exp . ">\n";
+        if ($demande_ar) {
+            $headers .= "Disposition-Notification-To: " . $societe . " <" . $exp . ">\n";
+            $headers .= "Return-Receipt-To: " . $societe . " <" . $exp . ">\n";
+        }
+        $headers .= "MIME-Version: 1.0\n";
+        if (strlen($message_html)) {
+            $headers .= "Content-Type: multipart/alternative; boundary=\"$mime_boundary\"\n";
+        }
+        // TEXT EMAIL PART
+        $message = "";
+        if (strlen($message_html)) {
+            $message .= "\n--$mime_boundary\n";
+            $message .= "Content-Type: text/plain; charset=" . __PHP_ENCODING__ . "\n";
+            $message .= "Content-Transfer-Encoding: 8bit\n\n";
+        }
+        $message .= $this->html_entity_decode(stripslashes($message_text));
+        // HTML EMAIL PART
+        if (strlen($message_html)) {
+            $message .= "\n--$mime_boundary\n";
+            $message .= "Content-Type: text/html; charset=" . __PHP_ENCODING__ . "\n";
+            $message .= "Content-Transfer-Encoding: 8bit\n\n";
+            $message .= "<html>\n";
+            $message .= "<body>\n";
+            $message .= stripslashes($message_html);
+            $message .= "</body>\n";
+            $message .= "</html>\n";
+            // FINAL BOUNDARY
+            $message .= "\n--$mime_boundary--\n\n";
+        }
+        $resultat = mail($dest, $titre, $message, $headers);
+        return $resultat;
     }
 
     // =======================
@@ -858,7 +797,7 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
         $c = preg_replace("/\"\"(.*?)\"/i", "\"$1\"", $c);
         $c = htmlspecialchars($c, ENT_NOQUOTES);
         // Expand numbers (ie. int(2) 10 => int(1) 2 10, float(6) 128.64 => float(1) 6 128.64 etc.)
-        $c = preg_replace("/\(int|float\)\(([0-9\.]+)\)/ie", "'($1)('." . $this->strlen('$2') . ".') <span class=\"number\">$2</span>'", $c);
+        $c = preg_replace("/(int|float)\(([0-9\.]+)\)/ie", "'$1('." . $this->strlen('$2') . ".') <span class=\"number\">$2</span>'", $c);
         // Syntax Highlighting of Strings. This seems cryptic, but it will also allow non-terminated strings to get parsed.
         $c = preg_replace("/(\[[\w ]+\] = string\([0-9]+\) )\"(.*?)/sim", "$1<span class=\"string\">\"", $c);
         $c = preg_replace("/(\"\n{1,})( {0,}\})/sim", "$1</span>$2", $c);
@@ -1002,9 +941,6 @@ BACKTRACE;
       */
     public function img_resize ($args)
     {
-        if (!is_file($args['filename'])) {
-            return false;
-        }
         if (!extension_loaded('gd')) {
             trigger_error('Extension PHP GD manquante', E_USER_ERROR);
         }
@@ -1117,13 +1053,7 @@ BACKTRACE;
     public function array_first($list)
     {
         $elt = array_values(array_slice($list, 0, 1));
-        if (isset($elt[0])) {
-            return $elt[0];
-        } else {
-            if (__DEBUGABLE__) {
-                $this->getHelper('debug')->trigger_error('Pas de premier élément dans un tableau vide', E_USER_NOTICE, 1);
-            }
-        }
+        return $elt[0];
     }
 
     /**
@@ -1137,13 +1067,7 @@ BACKTRACE;
     public function array_last($list)
     {
         $elt = array_values(array_slice($list, -1));
-        if (isset($elt[0])) {
-            return $elt[0];
-        } else {
-            if (__DEBUGABLE__) {
-                $this->getHelper('debug')->trigger_error('Pas de dernier élément dans un tableau vide', E_USER_NOTICE, 1);
-            }
-        }
+        return $elt[0];
     }
 
     /**
@@ -1169,51 +1093,6 @@ BACKTRACE;
             return true;
         }
         return false;
-    }
-
-    /**
-     * array_replace_recursive : fallback pour php < 5.3
-     *
-     * @param mixed $array
-     * @param mixed $array1
-     * @access public
-     * @return void
-     */
-    public function array_replace_recursive($array, $array1)
-    {
-        if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
-            return call_user_func_array('array_replace_recursive', func_get_args());
-        } else {
-            if (!function_exists('clementine_array_replace_recursive_recurse')) {
-                function clementine_array_replace_recursive_recurse($array, $array1)
-                {
-                    foreach ($array1 as $key => $value) {
-                        // create new key in $array, if it is empty or not an array
-                        if (!isset($array[$key]) || (isset($array[$key]) && !is_array($array[$key]))) {
-                            $array[$key] = array();
-                        }
-                        // overwrite the value in the base array
-                        if (is_array($value)) {
-                            $value = clementine_array_replace_recursive_recurse($array[$key], $value);
-                        }
-                        $array[$key] = $value;
-                    }
-                    return $array;
-                }
-            }
-            // handle the arguments, merge one by one
-            $args = func_get_args();
-            $array = $args[0];
-            if (!is_array($array)) {
-                return $array;
-            }
-            for ($i = 1; $i < count($args); ++$i) {
-                if (is_array($args[$i])) {
-                    $array = clementine_array_replace_recursive_recurse($array, $args[$i]);
-                }
-            }
-            return $array;
-        }
     }
 
     /**
@@ -1341,8 +1220,7 @@ BACKTRACE;
      * @access public
      * @return void
      */
-    public function send_file ($path, $visible_name = null, $content_disposition = 'auto', $buffer_size = 8192)
-    {
+    public function send_file ($path, $visible_name = null, $content_disposition = 'auto', $buffer_size = 8192) {
         // TODO : support mod_xsendfile
         ini_set('display_errors', 'off');
         set_time_limit(0); // prevent long file from getting cut off
@@ -1413,22 +1291,6 @@ BACKTRACE;
             }
         }
         return $mimetype;
-    }
-
-    // =============================
-    // Fonctions de gestion de dates
-    // =============================
-
-    public function get_date_range($first, $last, $step = '+1 day', $format = 'Y-m-d')
-    {
-        $dates = array();
-        $current = strtotime($first);
-        $last = strtotime($last);
-        while ($current <= $last) {
-            $dates[] = date($format, $current);
-            $current = strtotime($step, $current);
-        }
-        return $dates;
     }
 
 }
