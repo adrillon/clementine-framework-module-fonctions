@@ -649,7 +649,7 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
      */
     public function est_email ($str)
     {
-        return filter_var($str, FILTER_VALIDATE_EMAIL);
+        return preg_match('/^[a-z0-9\._+-]+@([a-z0-9-]+\.)+[[:alpha:]]+$/i', $str);
     }
 
     /**
