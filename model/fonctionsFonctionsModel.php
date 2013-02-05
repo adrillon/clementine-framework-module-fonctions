@@ -34,28 +34,6 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
     }
 
     /**
-     * htmlspecialchars : wrapper pour htmlspecialchars afin de lui faire utiliser le bon encodage par defaut (celui du site, et non ISO-8859-1)
-     * 
-     * @param mixed $string 
-     * @param mixed $flags 
-     * @param mixed $encoding 
-     * @param mixed $double_encode 
-     * @access public
-     * @return void
-     */
-    public function htmlspecialchars ($string, $flags = ENT_COMPAT, $encoding = null, $double_encode = true)
-    {
-        if ($encoding === null) {
-            $encoding = mb_internal_encoding();
-        }
-        // php < 5.2.3 compatibility
-        if (!$double_encode) {
-            return htmlspecialchars($string, $flags, $encoding, $double_encode);
-        }
-        return htmlspecialchars($string, $flags, $encoding);
-    }
-
-    /**
      * html_entity_decode : wrapper pour html_entity_decode afin de lui faire utiliser le bon encodage par defaut (celui du site, et non ISO-8859-1)
      * 
      * @param mixed $string 
@@ -248,7 +226,7 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
     // =======================================
 
     /**
-     * ifSet : wrapper de isset pour les tableau notamment get post et cookie... à utiliser à la place de Clementine::$register['request']->GET, Clementine::$register['request']->POST et Clementine::$register['request']->COOKIE... afin d'eviter les failles basees sur l'utilisation de ces tableaux
+     * ifSet : wrapper de isset pour les tableau notamment get post et cookie... à utiliser à la place de Clementine::$register['request']['GET'], Clementine::$register['request']['POST'] et Clementine::$register['request']['COOKIE']... afin d'eviter les failles basees sur l'utilisation de ces tableaux
      * 
      * @param mixed $tableau 
      * @param mixed $key 
@@ -260,13 +238,13 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
         $bool = false;
         switch ($tableau) {
             case 'get' : 
-                $bool = isset(Clementine::$register['request']->GET[$key]);
+                $bool = isset(Clementine::$register['request']['GET'][$key]);
                 break;
             case 'post' : 
-                $bool = isset(Clementine::$register['request']->POST[$key]);
+                $bool = isset(Clementine::$register['request']['POST'][$key]);
                 break;
             case 'cookie' : 
-                $bool = isset(Clementine::$register['request']->COOKIE[$key]);
+                $bool = isset(Clementine::$register['request']['COOKIE'][$key]);
                 break;
             default :
                 if (is_array($tableau)) {
@@ -278,7 +256,7 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
     }
 
     /**
-     * ifGet : wrapper pour ifSetGet qui recupere un parametre dans Clementine::$register['request']->GET
+     * ifGet : wrapper pour ifSetGet qui recupere un parametre dans Clementine::$register['request']['GET']
      * 
      * @param mixed $type 
      * @param mixed $key 
@@ -292,11 +270,11 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
      */
     public function ifGet ($type, $key, $ifset = null, $ifnotset = null, $non_vide = 0, $trim = 0, $striptags = 1)
     {
-        return $this->ifSetGetGPC($type, Clementine::$register['request']->GET, $key, $ifset, $ifnotset, $non_vide, $trim, $striptags);
+        return $this->ifSetGetGPC($type, Clementine::$register['request']['GET'], $key, $ifset, $ifnotset, $non_vide, $trim, $striptags);
     }
 
     /**
-     * ifPost : wrapper pour ifSetGet qui recupere un parametre dans Clementine::$register['request']->POST
+     * ifPost : wrapper pour ifSetGet qui recupere un parametre dans Clementine::$register['request']['POST']
      * 
      * @param mixed $type 
      * @param mixed $key 
@@ -310,11 +288,11 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
      */
     public function ifPost ($type, $key, $ifset = null, $ifnotset = null, $non_vide = 0, $trim = 0, $striptags = 1)
     {
-        return $this->ifSetGetGPC($type, Clementine::$register['request']->POST, $key, $ifset, $ifnotset, $non_vide, $trim, $striptags);
+        return $this->ifSetGetGPC($type, Clementine::$register['request']['POST'], $key, $ifset, $ifnotset, $non_vide, $trim, $striptags);
     }
 
     /**
-     * ifCookie : wrapper pour ifSetGet qui recupere un parametre dans Clementine::$register['request']->COOKIE
+     * ifCookie : wrapper pour ifSetGet qui recupere un parametre dans Clementine::$register['request']['COOKIE']
      * 
      * @param mixed $type 
      * @param mixed $key 
@@ -328,11 +306,11 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
      */
     public function ifCookie ($type, $key, $ifset = null, $ifnotset = null, $non_vide = 0, $trim = 0, $striptags = 1)
     {
-        return $this->ifSetGetGPC($type, Clementine::$register['request']->COOKIE, $key, $ifset, $ifnotset, $non_vide, $trim, $striptags);
+        return $this->ifSetGetGPC($type, Clementine::$register['request']['COOKIE'], $key, $ifset, $ifnotset, $non_vide, $trim, $striptags);
     }
 
     /**
-     * ifSetGetGPC : wrapper pour ifSetGet qui recupere un parametre dans un tableau potentiellement dangereux, tel que Clementine::$register['request']->GET, Clementine::$register['request']->POST...
+     * ifSetGetGPC : wrapper pour ifSetGet qui recupere un parametre dans un tableau potentiellement dangereux, tel que Clementine::$register['request']['GET'], Clementine::$register['request']['POST']...
      * 
      * @param mixed $type 
      * @param mixed $key 
@@ -355,13 +333,7 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
         }
         $r = $this->ifSetGet($type, $tableau, $key, $ifset, $ifnotset, $non_vide, $trim, $striptags);
         if (!get_magic_quotes_gpc()) {
-            if ($type == 'array') {
-                foreach ($r as $subkey => $val) {
-                    $r[$subkey] = addslashes($r[$subkey]);
-                }
-            } else {
-                $r = addslashes($r);
-            }
+            $r = addslashes($r);
         }
         // EN AJAX, ATTENTION A L'ENCODAGE : pour s'assurer que les caractères accentués (ou le sigle euro par exemple) sont bien transmis, il FAUT encoder l'URL
         // En JAVASCRIPT on utilisera la fonction encodeURIComponent
@@ -384,7 +356,7 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
      * ifSetGet : fonction centrale de la recuperation de paramètres : recupere le parametre $key dans le tableau $tableau
      * 
      * @param mixed $type : force le typage
-     * @param mixed $tableau : Clementine::$register['request']->GET, Clementine::$register['request']->POST, ou Clementine::$register['request']->COOKIE... ou n'importe quel tableau
+     * @param mixed $tableau : Clementine::$register['request']['GET'], Clementine::$register['request']['POST'], ou Clementine::$register['request']['COOKIE']... ou n'importe quel tableau
      * @param mixed $key : nom du parametre à recuperer
      * @param mixed $ifset : valeur a récupérer a la place du paramètre si celui si existe bien dans $tableau
      * @param mixed $ifnotset : valeur a récupérer a la place du paramètre si celui si n'existe pas dans $tableau
@@ -649,7 +621,7 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
      */
     public function est_email ($str)
     {
-        return filter_var($str, FILTER_VALIDATE_EMAIL);
+        return preg_match('/^[a-z0-9\._+-]+@([a-z0-9-]+\.)+[[:alpha:]]+$/i', $str);
     }
 
     /**
@@ -775,18 +747,59 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
      */
     public function envoie_mail ($dest, $exp, $societe, $titre, $message_text, $message_html = null, $style = null, $demande_ar = null, $anonymyze = false)
     {
-        $params = array(
-            'to'           => $dest,
-            'from'         => $exp,
-            'fromname'     => $societe,
-            'title'        => $titre,
-            'message_text' => $message_text,
-            'message_html' => $message_html,
-            'style'        => $style,
-            'receipt'      => $demande_ar,
-            'anonymize'    => $anonymyze
-        );
-        return $this->getHelper('mail')->send($params);
+        // Securite antispam : les emails ne doivent contenir que des caracteres mail et il ne doit pas y avoir de retours a la ligne avant le titre
+        $dest       = preg_replace("/[^a-zA-Z0-9@\._+-]/", "", $dest);
+        $exp        = preg_replace("/[^a-zA-Z0-9@\._+-]/", "", $exp);
+        $societe    = preg_replace("/;*/",  "", $societe);
+        $societe    = preg_replace("/\r*/", "", $societe);
+        $societe    = preg_replace("/\n*/", "", $societe);
+        $titre      = preg_replace("/\r*/", "", $titre);
+        $titre      = preg_replace("/\n*/", "", $titre);
+        $titre      = mb_encode_mimeheader($titre); // pour mieux passer au travers des antispam (cf. SUBJECT_NEEDS_ENCODING et SUBJ_ILLEGAL_CHARS de SpamAssassin)
+        // MIME BOUNDARY
+        $mime_boundary = "---- " . preg_replace("/[^a-zA-Z0-9@\._+-]/", "", $societe) . " ----" . md5(time());
+        // MAIL HEADERS
+        $headers  = 'From: "' . addslashes($societe) . '" <' . $exp . ">\n";
+        $headers .= 'Reply-To: "' . addslashes($societe) . '" <' . $exp . ">\n";
+        $headers .= 'Return-Path: "' . addslashes($societe) . '" <' . $exp . ">\n";
+        if ($demande_ar) {
+            $headers .= 'Disposition-Notification-To: "' . addslashes($societe) . '" <' . $exp . ">\n";
+            $headers .= 'Return-Receipt-To: "' . addslashes($societe) . '" <' . $exp . ">\n";
+        }
+        $headers .= "MIME-Version: 1.0\n";
+        if (strlen($message_html)) {
+            $headers .= "Content-Type: multipart/alternative; boundary=\"$mime_boundary\"\n";
+        }
+        // TEXT EMAIL PART
+        $message = "";
+        if (strlen($message_html)) {
+            $message .= "\n--$mime_boundary\n";
+            $message .= "Content-Type: text/plain; charset=" . __PHP_ENCODING__ . "\n";
+            $message .= "Content-Transfer-Encoding: 8bit\n\n";
+        }
+        $message .= $this->html_entity_decode(stripslashes($message_text));
+        // HTML EMAIL PART
+        if (strlen($message_html)) {
+            $message .= "\n--$mime_boundary\n";
+            $message .= "Content-Type: text/html; charset=" . __PHP_ENCODING__ . "\n";
+            $message .= "Content-Transfer-Encoding: 8bit\n\n";
+            $message .= "<html>\n";
+            $message .= "<body>\n";
+            $message .= stripslashes($message_html);
+            $message .= "</body>\n";
+            $message .= "</html>\n";
+            // FINAL BOUNDARY
+            $message .= "\n--$mime_boundary--\n\n";
+        }
+        if ($anonymyze) {
+            $regexp_anonymize = '/__CLEMENTINE_MAIL_ANONYMIZE_START__(.*\r*\n*)+__CLEMENTINE_MAIL_ANONYMIZE_STOP__/mU';
+            $message = preg_replace($regexp_anonymize, '######', $message);
+        } else {
+            $message = str_replace('__CLEMENTINE_MAIL_ANONYMIZE_START__', '', $message);
+            $message = str_replace('__CLEMENTINE_MAIL_ANONYMIZE_STOP__', '', $message);
+        }
+        $resultat = mail($dest, $titre, $message, $headers);
+        return $resultat;
     }
 
     // =======================
