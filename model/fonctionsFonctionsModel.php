@@ -87,7 +87,14 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
      */
     public function strip_tags ($string, $allowtags = null, $allowattributes = null)
     {
-        $string = strip_tags($string, $allowtags);
+        if (is_scalar($string)) {
+            $string = strip_tags($string, $allowtags);
+        } else {
+            if (__DEBUGABLE__) {
+                $this->getHelper('debug')->trigger_error('strip_tags() expects parameter 1 to be string, ' . gettype($string) . ' given', E_USER_WARNING, 1);
+            }
+            return false;
+        }
         if (!is_null($allowattributes)) {
             if (!is_array($allowattributes)) {
                 $allowattributes = explode(",", $allowattributes);
