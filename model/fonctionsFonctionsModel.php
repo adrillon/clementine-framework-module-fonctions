@@ -936,7 +936,7 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
         $c = preg_replace("/\n<\/span>/", "</span>\n", $c);
         $S_from = '';
         // Nom du fichier appelant la fonction
-        $A_backTrace = debug_backtrace();
+        $A_backTrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
         if (is_array($A_backTrace) && array_key_exists(0, $A_backTrace)) {
             $S_from = <<< BACKTRACE
                 {$A_backTrace[1]{'file'}}, ligne {$A_backTrace[1]{'line'}}
@@ -1400,6 +1400,51 @@ BACKTRACE;
             fclose($file);
         }
         return ((connection_status() == 0) && (!connection_aborted()));
+    }
+
+    /**
+     * zipball: generate zip and serves it as if it was downloaded directly
+     * 
+     * @param mixed $files : files list
+     * @param mixed $filename : generated file's name
+     * @param mixed $junkpaths : do not store directory names. All the files will be at the root of the archive
+     * @param mixed $nowildcard : disable zip command's native wildcard feature
+     * @access public
+     * @return void
+     */
+    public function zipball($files, $filename = 'archive.zip', $junkpaths = 1, $nowildcard = 1)
+    {
+        if (!is_array($files)) {
+            $this->getHelper('debug')->trigger_error('zipball() expects parameter 1 to be array, ' . gettype($string) . ' given', E_USER_WARNING, 1);
+            return false;
+        }
+        if (!count($files)) {
+            $this->getHelper('debug')->trigger_error('empty list', E_USER_WARNING, 1);
+            return false;
+        }
+        header('Content-Type: application/octet-stream');
+        header('Content-disposition: attachment; filename="' . ($filename) . '"');
+        $path_to_zip = Clementine::$config['module_fonctions']['path_to_zip'];
+        $command = $path_to_zip . ' -r ';
+        if ($nowildcard) {
+            $command .= ' --no-wild ';
+        }
+        if ($junkpaths) {
+            $command .= ' --junk-paths ';
+        }
+        $command .= ' - ';
+        foreach ($files as $file) {
+            $command .= ' ' . escapeshellarg($file);
+        }
+        $fp = popen($command, 'r');
+        $bufsize = 8192;
+        $buff = '';
+        while (!feof($fp)) {
+            $buff = fread($fp, $bufsize);
+            echo $buff;
+        }
+        pclose($fp);
+        return ((!connection_status()) && (!connection_aborted()));
     }
 
     /**
