@@ -1422,8 +1422,6 @@ BACKTRACE;
             $this->getHelper('debug')->trigger_error('empty list', E_USER_WARNING, 1);
             return false;
         }
-        header('Content-Type: application/octet-stream');
-        header('Content-disposition: attachment; filename="' . ($filename) . '"');
         $path_to_zip = Clementine::$config['module_fonctions']['path_to_zip'];
         $command = $path_to_zip . ' -r ';
         if ($nowildcard) {
@@ -1434,8 +1432,13 @@ BACKTRACE;
         }
         $command .= ' - ';
         foreach ($files as $file) {
-            $command .= ' ' . escapeshellarg($file);
+            // files must exist in order for the command not to abort
+            if (is_file($file)) {
+                $command .= ' ' . escapeshellarg($file);
+            }
         }
+        header('Content-Type: application/octet-stream');
+        header('Content-disposition: attachment; filename="' . ($filename) . '"');
         $fp = popen($command, 'r');
         $bufsize = 8192;
         $buff = '';
