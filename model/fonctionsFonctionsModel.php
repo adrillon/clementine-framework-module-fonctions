@@ -1427,10 +1427,10 @@ BACKTRACE;
         $path_to_zip = Clementine::$config['module_fonctions']['path_to_zip'];
         $command = $path_to_zip . ' -r ';
         if ($nowildcard) {
-            $command .= ' --no-wild ';
+            $command .= ' -nw ';
         }
         if ($junkpaths) {
-            $command .= ' --junk-paths ';
+            $command .= ' -j ';
         }
         $command .= ' - ';
         foreach ($files as $file) {
