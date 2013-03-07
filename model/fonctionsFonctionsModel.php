@@ -1403,16 +1403,15 @@ BACKTRACE;
     }
 
     /**
-     * zipball: generate zip and serves it as if it was downloaded directly
-     * 
+     * zipball: create or update a zip
+     *
      * @param mixed $files : files list
      * @param mixed $filename : generated file's name
-     * @param mixed $junkpaths : do not store directory names. All the files will be at the root of the archive
-     * @param mixed $nowildcard : disable zip command's native wildcard feature
+     * @param mixed $path : where to save the archive
+     * @param mixed $folder : store files in a specific folder in the archive if not null
      * @access public
-     * @return void
      */
-    public function zipball($files, $filename = 'archive.zip', $junkpaths = 1, $nowildcard = 1)
+    public function zipball($files, $filename = 'archive.zip', $path, $folder = '')
     {
         if (!is_array($files)) {
             $this->getHelper('debug')->trigger_error('zipball() expects parameter 1 to be array, ' . gettype($string) . ' given', E_USER_WARNING, 1);
@@ -1422,33 +1421,17 @@ BACKTRACE;
             $this->getHelper('debug')->trigger_error('empty list', E_USER_WARNING, 1);
             return false;
         }
-        $path_to_zip = Clementine::$config['module_fonctions']['path_to_zip'];
-        $command = $path_to_zip . ' -r ';
-        if ($nowildcard) {
-            $command .= ' -nw ';
-        }
-        if ($junkpaths) {
-            $command .= ' -j ';
-        }
-        $command .= ' - ';
-        foreach ($files as $file) {
-            // files must exist in order for the command not to abort
-            if (is_file($file)) {
-                $command .= ' ' . escapeshellarg($file);
+        $zip = new ZipArchive();
+        if ($zip->open($filename, ZIPARCHIVE::CREATE)) {
+            foreach ($files as $file) {
+                if (is_file($file)) {
+                    $zip->addFile($file, $folder . str_replace($path, '', $file));
+                }
             }
         }
-        header('Content-Type: application/octet-stream');
-        header('Content-disposition: attachment; filename="' . ($filename) . '"');
-        $fp = popen($command, 'r');
-        $bufsize = 8192;
-        $buff = '';
-        while (!feof($fp)) {
-            $buff = fread($fp, $bufsize);
-            echo $buff;
-        }
-        pclose($fp);
-        return ((!connection_status()) && (!connection_aborted()));
-    }
+        $zip->close();
+        unset($zip);
+    }   
 
     /**
      * get_mime_type : returns mime type of a file
