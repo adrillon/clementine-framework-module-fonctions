@@ -1422,15 +1422,17 @@ BACKTRACE;
             return false;
         }
         $zip = new ZipArchive();
-        if ($zip->open($filename, ZIPARCHIVE::CREATE)) {
+        $errcode = $zip->open($filename, ZIPARCHIVE::CREATE);
+        if ($errcode === true) {
             foreach ($files as $file) {
                 if (is_file($file)) {
                     $zip->addFile($file, $folder . str_replace($path, '', $file));
                 }
             }
+            $zip->close();
         }
-        $zip->close();
         unset($zip);
+        return $errcode;
     }   
 
     /**
