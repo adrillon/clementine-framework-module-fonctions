@@ -13,11 +13,11 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * htmlentities : wrapper pour htmlentities afin de lui faire utiliser le bon encodage par defaut (celui du site, et non ISO-8859-1)
-     * 
-     * @param mixed $string 
-     * @param mixed $quote_style 
-     * @param mixed $charset 
-     * @param mixed $double_encode 
+     *
+     * @param mixed $string
+     * @param mixed $quote_style
+     * @param mixed $charset
+     * @param mixed $double_encode
      * @access public
      * @return void
      */
@@ -35,11 +35,11 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * htmlspecialchars : wrapper pour htmlspecialchars afin de lui faire utiliser le bon encodage par defaut (celui du site, et non ISO-8859-1)
-     * 
-     * @param mixed $string 
-     * @param mixed $flags 
-     * @param mixed $encoding 
-     * @param mixed $double_encode 
+     *
+     * @param mixed $string
+     * @param mixed $flags
+     * @param mixed $encoding
+     * @param mixed $double_encode
      * @access public
      * @return void
      */
@@ -57,10 +57,10 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * html_entity_decode : wrapper pour html_entity_decode afin de lui faire utiliser le bon encodage par defaut (celui du site, et non ISO-8859-1)
-     * 
-     * @param mixed $string 
-     * @param mixed $quote_style 
-     * @param mixed $charset 
+     *
+     * @param mixed $string
+     * @param mixed $quote_style
+     * @param mixed $charset
      * @access public
      * @return void
      */
@@ -78,7 +78,7 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * strip_tags : wrapper pour strip_tags, qui peut preserver les tags desires tout en supprimant quand meme leurs attributs, et qui peut préserver les attributs désirés. Pratique contre les failles XSS / CSRF
-     * 
+     *
      * @param mixed $string
      * @param mixed $allowtags
      * @param mixed $allowattributes
@@ -113,11 +113,11 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * substr : wrapper substr compatible utf8
-     * 
-     * @param mixed $string 
-     * @param mixed $start 
-     * @param mixed $lenght 
-     * @param mixed $charset 
+     *
+     * @param mixed $string
+     * @param mixed $start
+     * @param mixed $lenght
+     * @param mixed $charset
      * @access public
      * @return void
      */
@@ -138,7 +138,7 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
      * truncate : cuts a string to the length of $length and replaces the last
      *            characters with the ending if the text is longer than length.
      *            credits goes to CakePHP for this wonder
-     * 
+     *
      * @param string $text : string to truncate
      * @param int $length : length of returned string, including ellipsis
      * @param array $options : an array of html attributes and options :
@@ -234,11 +234,11 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * strlen : wrapper strlen compatible utf8
-     * 
-     * @param mixed $string 
-     * @param mixed $start 
-     * @param mixed $lenght 
-     * @param mixed $charset 
+     *
+     * @param mixed $string
+     * @param mixed $start
+     * @param mixed $lenght
+     * @param mixed $charset
      * @access public
      * @return void
      */
@@ -256,9 +256,9 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * ifSet : wrapper de isset pour les tableau notamment get post et cookie... à utiliser à la place de Clementine::$register['request']->GET, Clementine::$register['request']->POST et Clementine::$register['request']->COOKIE... afin d'eviter les failles basees sur l'utilisation de ces tableaux
-     * 
-     * @param mixed $tableau 
-     * @param mixed $key 
+     *
+     * @param mixed $tableau
+     * @param mixed $key
      * @access public
      * @return void
      */
@@ -266,13 +266,13 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
     {
         $bool = false;
         switch ($tableau) {
-            case 'get' : 
+            case 'get' :
                 $bool = isset(Clementine::$register['request']->GET[$key]);
                 break;
-            case 'post' : 
+            case 'post' :
                 $bool = isset(Clementine::$register['request']->POST[$key]);
                 break;
-            case 'cookie' : 
+            case 'cookie' :
                 $bool = isset(Clementine::$register['request']->COOKIE[$key]);
                 break;
             default :
@@ -286,14 +286,14 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * ifGet : wrapper pour ifSetGet qui recupere un parametre dans Clementine::$register['request']->GET
-     * 
-     * @param mixed $type 
-     * @param mixed $key 
-     * @param mixed $ifset 
-     * @param mixed $ifnotset 
-     * @param int $non_vide 
-     * @param int $trim 
-     * @param int $striptags 
+     *
+     * @param mixed $type
+     * @param mixed $key
+     * @param mixed $ifset
+     * @param mixed $ifnotset
+     * @param int $non_vide
+     * @param int $trim
+     * @param int $striptags
      * @access public
      * @return void
      */
@@ -304,14 +304,14 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * ifPost : wrapper pour ifSetGet qui recupere un parametre dans Clementine::$register['request']->POST
-     * 
-     * @param mixed $type 
-     * @param mixed $key 
-     * @param mixed $ifset 
-     * @param mixed $ifnotset 
-     * @param int $non_vide 
-     * @param int $trim 
-     * @param int $striptags 
+     *
+     * @param mixed $type
+     * @param mixed $key
+     * @param mixed $ifset
+     * @param mixed $ifnotset
+     * @param int $non_vide
+     * @param int $trim
+     * @param int $striptags
      * @access public
      * @return void
      */
@@ -322,14 +322,14 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * ifCookie : wrapper pour ifSetGet qui recupere un parametre dans Clementine::$register['request']->COOKIE
-     * 
-     * @param mixed $type 
-     * @param mixed $key 
-     * @param mixed $ifset 
-     * @param mixed $ifnotset 
-     * @param int $non_vide 
-     * @param int $trim 
-     * @param int $striptags 
+     *
+     * @param mixed $type
+     * @param mixed $key
+     * @param mixed $ifset
+     * @param mixed $ifnotset
+     * @param int $non_vide
+     * @param int $trim
+     * @param int $striptags
      * @access public
      * @return void
      */
@@ -340,14 +340,14 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * ifSetGetGPC : wrapper pour ifSetGet qui recupere un parametre dans un tableau potentiellement dangereux, tel que Clementine::$register['request']->GET, Clementine::$register['request']->POST...
-     * 
-     * @param mixed $type 
-     * @param mixed $key 
-     * @param mixed $ifset 
-     * @param mixed $ifnotset 
-     * @param int $non_vide 
-     * @param int $trim 
-     * @param int $striptags 
+     *
+     * @param mixed $type
+     * @param mixed $key
+     * @param mixed $ifset
+     * @param mixed $ifnotset
+     * @param int $non_vide
+     * @param int $trim
+     * @param int $striptags
      * @access public
      * @return void
      */
@@ -389,7 +389,7 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * ifSetGet : fonction centrale de la recuperation de paramètres : recupere le parametre $key dans le tableau $tableau
-     * 
+     *
      * @param mixed $type : force le typage
      * @param mixed $tableau : Clementine::$register['request']->GET, Clementine::$register['request']->POST, ou Clementine::$register['request']->COOKIE... ou n'importe quel tableau
      * @param mixed $key : nom du parametre à recuperer
@@ -460,8 +460,8 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * remove_accents : supprime les accents de la chaine $str (par transliteration en ASCII)
-     * 
-     * @param mixed $str 
+     *
+     * @param mixed $str
      * @access public
      * @return void
      */
@@ -479,13 +479,13 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * redirect : effectue une redirection HTTP par un header(), avec fallback Javascript et au pire, écrit le lien si le UserAgent ne suit aucune des redirections précédentes.
-     * 
-     * @param mixed $url 
-     * @param int $code_http 
+     *
+     * @param mixed $url
+     * @param int $code_http
      * @access public
      * @return void
      */
-    public function redirect ($url, $code_http = 302) 
+    public function redirect ($url, $code_http = 302)
     {
         // si appel en CLI on affiche un message à la place
         if (!isset($_SERVER['SERVER_NAME'])) {
@@ -500,9 +500,9 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * del_param : supprime le parametre $param de la chaine $url
-     * 
-     * @param mixed $url 
-     * @param mixed $param 
+     *
+     * @param mixed $url
+     * @param mixed $param
      * @param mixed $valeur : ne supprime le parametre que s'il a la valeur $valeur
      * @access public
      * @return void
@@ -519,10 +519,10 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * add_param : ajoute le parametre $param avec la valeur $valeur dans la chaine $url
-     * 
-     * @param mixed $url 
-     * @param mixed $param 
-     * @param mixed $valeur 
+     *
+     * @param mixed $url
+     * @param mixed $param
+     * @param mixed $valeur
      * @access public
      * @return void
      */
@@ -540,10 +540,10 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * mod_param : ajoute ou modifie la valeur du parametre $param dans la chaine $url
-     * 
-     * @param mixed $url 
-     * @param mixed $param 
-     * @param mixed $valeur 
+     *
+     * @param mixed $url
+     * @param mixed $param
+     * @param mixed $valeur
      * @access public
      * @return void
      */
@@ -557,12 +557,12 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * urlize : remplace les caracteres qui ne doivent pas etre presents pour faire des mots cles dans une URL par exemple
-     * 
-     * @param mixed $element 
+     *
+     * @param mixed $element
      * @access public
      * @return void
      */
-    public function urlize ($element) 
+    public function urlize ($element)
     {
         $element_clean = $this->html_entity_decode(stripslashes($element), ENT_QUOTES);
         $element_clean = $this->strip_tags($element_clean);
@@ -575,12 +575,12 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
     }
 
     /**
-     * isajax : renvoie vrai si la page a ete appellee en AJAX, faux sinon 
-     * 
+     * isajax : renvoie vrai si la page a ete appellee en AJAX, faux sinon
+     *
      * @access public
      * @return void
      */
-    public function isajax() 
+    public function isajax()
     {
         return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest');
     }
@@ -589,8 +589,8 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
     // Fonctions pour les formulaires
     // ==============================
     /**
-     * get_max_filesize : retourne la taille maximale (en octets) de fichier qu'on peut uploader sur ce serveur ! 
-     * 
+     * get_max_filesize : retourne la taille maximale (en octets) de fichier qu'on peut uploader sur ce serveur !
+     *
      * @access public
      * @return void
      */
@@ -612,7 +612,7 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * convert_bytesize : conversion nombre en octets <=> human readable
-     * 
+     *
      * @param mixed $size : nombre a convertir
      * @param string $way : sens de la conversion : bytes => human readable par defaut
      * @param int $powunit : puissance a utiliser : 1000 par defaut (et non 1024)
@@ -649,8 +649,8 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * est_email : renvoie true si $str ressemble bien à une adresse email (x@y.z)
-     * 
-     * @param mixed $str 
+     *
+     * @param mixed $str
      * @access public
      * @return void
      */
@@ -661,8 +661,8 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * est_email_jetable : renvoie true si $email fait est une adresse email jetable facilement identifiable
-     * 
-     * @param mixed $email 
+     *
+     * @param mixed $email
      * @access public
      * @return void
      */
@@ -697,10 +697,10 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
     }
 
     /**
-     * est_siret : renvoie vrai si le numéro est bien un numéro SIRET 
+     * est_siret : renvoie vrai si le numéro est bien un numéro SIRET
      *            (ne sait pas gérer un SIRET comme P00200006 ou MONACOCONFO001)
-     * 
-     * @param mixed $siret 
+     *
+     * @param mixed $siret
      * @access public
      * @return void
      */
@@ -723,7 +723,7 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
             $number = (int) $siret[$index];
             if (($index % 2) == 0) {
                 if (($number *= 2) > 9) {
-                    $number -= 9; 
+                    $number -= 9;
                 }
             }
             $sum += $number;
@@ -737,8 +737,8 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * get_real_ip : renvoie l'adresse ip (valeur sécurisée) de l'utilisateur meme s'il passe par un proxy
-     * 
-     * @param mixed $email 
+     *
+     * @param mixed $email
      * @access public
      * @return void
      */
@@ -768,7 +768,7 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * envoie_mail : fonction securisee pour envoyer un mail
-     * 
+     *
      * @param mixed $dest : adresse email destinataire
      * @param mixed $exp : adresse email expediteur
      * @param mixed $societe : nom expediteur
@@ -801,10 +801,10 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
     // =======================
     /**
      * print_pre : print_r entre balises <pre /> pour une meilleure lisibilite
-     * 
-     * @param mixed $mixed 
-     * @param string $color 
-     * @param mixed $nom 
+     *
+     * @param mixed $mixed
+     * @param string $color
+     * @param mixed $nom
      * @access public
      * @return void
      */
@@ -821,8 +821,8 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * echo_net : echo() plus visible
-     * 
-     * @param mixed $string 
+     *
+     * @param mixed $string
      * @access public
      * @return void
      */
@@ -833,8 +833,8 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
 
     /**
      * print_r_net : print_r() plus visible
-     * 
-     * @param array $array 
+     *
+     * @param array $array
      * @access public
      * @return void
      */
@@ -963,9 +963,9 @@ BACKTRACE;
     // ==================================
 
     /**
-     * imagecreatefrom_x : ouvre l'image quel que soit son format : jpg, gif ou png 
-     * 
-     * @param mixed $filename 
+     * imagecreatefrom_x : ouvre l'image quel que soit son format : jpg, gif ou png
+     *
+     * @param mixed $filename
      * @access public
      * @return void
      */
@@ -994,7 +994,7 @@ BACKTRACE;
 
      /**
       * img_resize : redimensionne (canevas) puis decoupe (crop) l'image, et la sauvegarde ou l'affiche (utilise la librairie GD)
-      * 
+      *
       * @param mixed $args['filename']      : fichier a ouvrir
       * @param int $args['canevaswidth']    : largeur du canevas (utilise pour le redimensionnement)
       * @param int $args['canevasheight']   : hauteur du canevas (utilise pour le redimensionnement)
@@ -1116,8 +1116,8 @@ BACKTRACE;
     /**
      * array_first : renvoie le premier element d'un tableau sans modifier le pointeur de tableau
      *               fonctionne avec les tableaux associatifs
-     * 
-     * @param mixed $list 
+     *
+     * @param mixed $list
      * @access public
      * @return void
      */
@@ -1136,8 +1136,8 @@ BACKTRACE;
     /**
      * array_last : renvoie le dernier element d'un tableau sans modifier le pointeur de tableau
      *              fonctionne avec les tableaux associatifs
-     * 
-     * @param mixed $list 
+     *
+     * @param mixed $list
      * @access public
      * @return void
      */
@@ -1154,13 +1154,55 @@ BACKTRACE;
     }
 
     /**
-     * array_insert_before : insere le tableau associatif $stuff 
+     * array_first_key : renvoie la clé du premier element d'un tableau sans modifier le pointeur de tableau
+     *               fonctionne avec les tableaux associatifs
+     *
+     * @param mixed $list
+     * @access public
+     * @return void
+     */
+    public function array_first_key($list)
+    {
+        $elt = array_slice($list, 0, 1);
+        if (count($elt)) {
+            list($key, $val) = each($elt);
+            return $key;
+        } else {
+            if (__DEBUGABLE__) {
+                $this->getHelper('debug')->trigger_error('Pas de clé de premier élément dans un tableau vide', E_USER_NOTICE, 1);
+            }
+        }
+    }
+
+    /**
+     * array_last_key : renvoie la clé du dernier element d'un tableau sans modifier le pointeur de tableau
+     *              fonctionne avec les tableaux associatifs
+     *
+     * @param mixed $list
+     * @access public
+     * @return void
+     */
+    public function array_last_key($list)
+    {
+        $elt = array_slice($list, -1);
+        if (count($elt)) {
+            list($key, $val) = each($elt);
+            return $key;
+        } else {
+            if (__DEBUGABLE__) {
+                $this->getHelper('debug')->trigger_error('Pas de clé de dernier élément dans un tableau vide', E_USER_NOTICE, 1);
+            }
+        }
+    }
+
+    /**
+     * array_insert_before : insere le tableau associatif $stuff
      *                       dans le tableau associatif $haystack
      *                       juste avant la clé $before_needle
-     * 
-     * @param mixed $stuff 
-     * @param mixed $haystack 
-     * @param mixed $before_needle 
+     *
+     * @param mixed $stuff
+     * @param mixed $haystack
+     * @param mixed $before_needle
      * @access public
      * @return void
      */
@@ -1225,18 +1267,18 @@ BACKTRACE;
 
     /**
      * xlsBOF : ouverture du fichier Excel
-     * 
+     *
      * @access public
      * @return void
      */
     public function xlsBOF ()
     {
-        echo pack("ssssss", 0x809, 0x8, 0x0, 0x10, 0x0, 0x0);  
+        echo pack("ssssss", 0x809, 0x8, 0x0, 0x10, 0x0, 0x0);
     }
 
     /**
      * xlsEOF : fermeture du fichier Excel
-     * 
+     *
      * @access public
      * @return void
      */
@@ -1247,10 +1289,10 @@ BACKTRACE;
 
     /**
      * xlsWriteNumber : affiche un champ de type "number"
-     * 
-     * @param mixed $row 
-     * @param mixed $col 
-     * @param mixed $value 
+     *
+     * @param mixed $row
+     * @param mixed $col
+     * @param mixed $value
      * @access public
      * @return void
      */
@@ -1262,10 +1304,10 @@ BACKTRACE;
 
     /**
      * xlsWriteLabel : affiche un champ de type "texte" (préserve les nombres des conversions automatiques)
-     * 
-     * @param mixed $row 
-     * @param mixed $col 
-     * @param mixed $value 
+     *
+     * @param mixed $row
+     * @param mixed $col
+     * @param mixed $value
      * @access public
      * @return void
      */
@@ -1278,7 +1320,7 @@ BACKTRACE;
 
     /**
      * matrix2xls : exporte un tableau 2D (matrice) en fichier Excel (champs au format texte), en appliquant html_entity_decode
-     * 
+     *
      * @param mixed $s_filename : nom fu fichier à télécharger
      * @param mixed $m_matrix : tableau 2D a exporter
      * @param mixed $a_titles : tableau des titres des colonnes
@@ -1341,10 +1383,10 @@ BACKTRACE;
 
     /**
      * send_file : serves a file as if it was downloaded directly
-     * 
-     * @param mixed $path 
-     * @param string $disposition 
-     * @param int $buffer_size 
+     *
+     * @param mixed $path
+     * @param string $disposition
+     * @param int $buffer_size
      * @access public
      * @return void
      */
@@ -1433,11 +1475,11 @@ BACKTRACE;
         }
         unset($zip);
         return $errcode;
-    }   
+    }
 
     /**
      * get_mime_type : returns mime type of a file
-     * 
+     *
      * @access public
      * @return void
      */
@@ -1446,7 +1488,7 @@ BACKTRACE;
         $mimetype = '';
         if (is_file($path)) {
             if (function_exists('finfo_open')) {
-                $finfo = finfo_open(FILEINFO_MIME_TYPE); 
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
                 $mimetype = finfo_file($finfo, $path);
             } elseif (function_exists('mime_content_type')) {
                 $mimetype = mime_content_type($path);
