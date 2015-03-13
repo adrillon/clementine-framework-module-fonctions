@@ -526,12 +526,18 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
      * @access public
      * @return void
      */
-    public function add_param ($url, $param, $valeur)
+    public function add_param ($url, $param, $valeur = null, $noreplace = 0)
     {
+        if ($noreplace && (strpos($url, '?' . $param . '=') !== false || strpos($url, '&' . $param . '=') !== false)) {
+            return $url;
+        }
         if ((strpos($url, '&')) !== false || (strpos($url, '?')) !== false) {
-            $url .= '&' . $param . '=' . $valeur;
+            $url .= '&' . $param;
         } else {
-            $url .= '?' . $param . '=' . $valeur;
+            $url .= '?' . $param;
+        }
+        if ($valeur !== null) {
+            $url .= '=' . $valeur;
         }
         $recherche = array('/&&/', '/&$/', '/\?&/');
         $remplace  = array('&', '', '?');
@@ -1456,7 +1462,7 @@ BACKTRACE;
     public function zipball($files, $filename = 'archive.zip', $path, $folder = '')
     {
         if (!is_array($files)) {
-            $this->getHelper('debug')->trigger_error('zipball() expects parameter 1 to be array, ' . gettype($string) . ' given', E_USER_WARNING, 1);
+            $this->getHelper('debug')->trigger_error('zipball() expects parameter 1 to be array, ' . gettype($files) . ' given', E_USER_WARNING, 1);
             return false;
         }
         if (!count($files)) {
