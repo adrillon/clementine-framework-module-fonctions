@@ -1272,6 +1272,33 @@ BACKTRACE;
     }
 
     /**
+     * array_override : merge associative arrays
+     * special values :
+     *      'getParent' : import section from parent, usefull if you want to fix a menu item's position
+     *      null : unset menu item
+     *
+     * @param mixed $defaults
+     * @param mixed $overrides
+     * @access public
+     * @return void
+     */
+    public function array_override($defaults, $overrides)
+    {
+        foreach ($overrides as $section_name => $section_value) {
+            if ($section_value == 'getParent') {
+                $section_keep_rang = $defaults[$section_name];
+            } else {
+                $section_keep_rang = $section_value;
+            }
+            unset($defaults[$section_name]);
+            if ($section_keep_rang !== null) {
+                $defaults[$section_name] = $section_keep_rang;
+            }
+        }
+        return $defaults;
+    }
+
+    /**
      * xlsBOF : ouverture du fichier Excel
      *
      * @access public
@@ -1520,4 +1547,3 @@ BACKTRACE;
     }
 
 }
-?>
