@@ -126,7 +126,7 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
         if ($charset === null) {
             $charset = mb_internal_encoding();
         }
-        // corrige le dans la gestion du parametre length (mb_substr interprette null comme 0)
+        // corrige le parametre length (mb_substr interprete null comme 0)
         if ($length) {
             return mb_substr($string, $start, $length, $charset);
         } else {
@@ -1437,7 +1437,7 @@ BACKTRACE;
         $name = basename($path);
         $disposition = $content_disposition;
         // filenames in IE containing dots will screw up the filename unless we add this
-        if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE")) {
+        if (!empty($_SERVER['HTTP_USER_AGENT']) && strstr($_SERVER['HTTP_USER_AGENT'], "MSIE")) {
             $name = preg_replace('/\./', '%2e', $name, substr_count($name, '.') - 1);
         }
         // required, or it might try to send the serving document instead of the file
