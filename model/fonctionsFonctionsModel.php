@@ -750,26 +750,40 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
      */
     public function get_real_ip ()
     {
-        if (!empty($_SERVER["HTTP_CLIENT_IP"])) {
-            //check for ip from share internet
-            $ip = $_SERVER["HTTP_CLIENT_IP"];
-        } elseif (!empty($_SERVER["HTTP_X_FORWARDED_FOR"])) {
-            // Check for the Proxy User
-            $ip = $_SERVER["HTTP_X_FORWARDED_FOR"];
-        } else {
-            $ip = $_SERVER["REMOTE_ADDR"];
-        }
-        // securise les valeurs
-        $ip_array = explode('.', $ip);
-        $cnt = count($ip_array);
-        for ($i = 0; $i < $cnt; ++$i) {
-            if ((string) $ip_array[$i] === (string) ((int) $ip_array[$i])) {
-                $ip_array[$i] = (string) ((int) $ip_array[$i]);
-            } else {
-                return false;
+        $ip = false;
+        if (!$ip && !empty($_SERVER["HTTP_FORWARDED"])) {
+            $matches = array();
+            if (preg_match('/^[[:space:]]*for=([0-9\.]*)/i', $_SERVER["HTTP_FORWARDED"], $matches)) {
+                if (!empty($matches[1])) {
+                    $ip = $matches[1];
+                }
             }
         }
-        return implode('.', $ip_array);
+        if (!$ip && !empty($_SERVER["HTTP_X_FORWARDED_FOR"])) {
+            $ip = $_SERVER["HTTP_X_FORWARDED_FOR"];
+        }
+        if (!$ip && !empty($_SERVER["HTTP_X_CLIENT_IP"])) {
+            $ip = $_SERVER["HTTP_X_CLIENT_IP"];
+        }
+        if (!$ip && !empty($_SERVER["HTTP_CLIENT_IP"])) {
+            $ip = $_SERVER["HTTP_CLIENT_IP"];
+        }
+        if (!$ip && !empty($_SERVER["REMOTE_ADDR"])) {
+            $ip = $_SERVER["REMOTE_ADDR"];
+        }
+        if (!$ip) {
+            return false;
+        }
+        // secure values
+        $insecure_ip_array = explode('.', $ip, 4);
+        $secure_ip_array = array();
+        foreach ($insecure_ip_array as $digit) {
+            if ((string) $digit !== (string) ((int) $digit)) {
+                return false;
+            }
+            $secure_ip_array[] = (int) $digit;
+        }
+        return implode('.', $secure_ip_array);
     }
 
     /**
@@ -1523,6 +1537,7 @@ BACKTRACE;
             if (function_exists('finfo_open')) {
                 $finfo = finfo_open(FILEINFO_MIME_TYPE);
                 $mimetype = finfo_file($finfo, $path);
+                finfo_close($finfo);
             } elseif (function_exists('mime_content_type')) {
                 $mimetype = mime_content_type($path);
             }
