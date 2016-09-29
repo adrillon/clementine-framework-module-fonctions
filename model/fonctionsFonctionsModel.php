@@ -1638,7 +1638,7 @@ BACKTRACE;
             $this->getHelper('debug')->trigger_error($error_string);
         }
         unset($zip);
-        switch ($download) {
+        switch ($return) {
             case 'download':
                 if (true === $errcode) {
                     header('Content-type: application/zip');
