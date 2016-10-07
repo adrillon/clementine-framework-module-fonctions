@@ -1495,12 +1495,12 @@ BACKTRACE;
      * zipball: create or update a zip
      *
      * @param mixed $files : files list
-     * @param mixed $zipname : name given to the zip archive
-     * @param mixed $server_path : where to save the archive
-     * @param mixed $return : choose if the return is a downlodable archive, or a clementine send_file or just the return code from archive creation
+     * @param mixed $zipname : name given to the resulting zip archive
+     * @param mixed $server_path : where to save the resulting zip archive
+     * @param mixed $download : send the file to the browser directly
      * @access public
      */
-    public function zipball($files, $zipname = 'archive.zip', $server_path = '/tmp', $return = 'download')
+    public function zipball($files, $zipname = 'archive.zip', $server_path = '/tmp', $download = false)
     {
         if (!is_array($files)) {
             $this->getHelper('debug')->trigger_error('zipball() expects parameter 1 to be array, ' . gettype($files) . ' given', E_USER_WARNING, 1);
@@ -1512,7 +1512,6 @@ BACKTRACE;
         }
         $filename = __FILES_ROOT__ . $server_path . '/' . uniqid() . '_' . $zipname;
         $zip = new ZipArchive();
-
         $errcode = $zip->open($filename, ZIPARCHIVE::CREATE);
         if ($errcode === true) {
             $filesize = 0;
@@ -1539,124 +1538,84 @@ BACKTRACE;
                 case 0:
                     $error_string = 'No error';
                     break;
-
                 case 1:
                     $error_string = 'Multi-disk zip archives not supported';
                     break;
-
                 case 2:
                     $error_string = 'Renaming temporary file failed';
                     break;
-
                 case 3:
                     $error_string = 'Closing zip archive failed';
                     break;
-
                 case 4:
                     $error_string = 'Seek error';
                     break;
-
                 case 5:
                     $error_string = 'Read error';
                     break;
-
                 case 6:
                     $error_string = 'Write error';
                     break;
-
                 case 7:
                     $error_string = 'CRC error';
                     break;
-
                 case 8:
                     $error_string = 'Containing zip archive was closed';
                     break;
-
                 case 9:
                     $error_string = 'No such file';
                     break;
-
                 case 10:
                     $error_string = 'File already exists';
                     break;
-
                 case 11:
                     $error_string = 'Can\'t open file';
                     break;
-
                 case 12:
                     $error_string = 'Failure to create temporary file';
                     break;
-
                 case 13:
                     $error_string = 'Zlib error';
                     break;
-
                 case 14:
                     $error_string = 'Malloc failure';
                     break;
-
                 case 15:
                     $error_string = 'Entry has been changed';
                     break;
-
                 case 16:
                     $error_string = 'Compression method not supported';
                     break;
-
                 case 17:
                     $error_string = 'Premature EOF';
                     break;
-
                 case 18:
                     $error_string = 'Invalid argument';
                     break;
-
                 case 19:
                     $error_string = 'Not a zip archive';
                     break;
-
                 case 20:
                     $error_string = 'Internal error';
                     break;
-
                 case 21:
                     $error_string = 'Zip archive inconsistent';
                     break;
-
                 case 22:
                     $error_string = 'Can\'t remove file';
                     break;
-
                 case 23:
                     $error_string = 'Entry has been deleted';
                     break;
-
                 default:
                     $error_string = 'An unknown error has occurred(' . intval($errcode) . ')';
             }
             $this->getHelper('debug')->trigger_error($error_string);
         }
         unset($zip);
-        switch ($return) {
-            case 'download':
-                if (true === $errcode) {
-                    header('Content-type: application/zip');
-                    header('Content-Disposition: attachment; filename=' . $zipname);
-                    header('Content-length: ' . filesize($filename));
-                    header('Pragma: no-cache');
-                    header('Expires: 0');
-                    readfile($filename);
-                    die();
-                } else {
-                    return $errcode;
-                }
-                break;
-            case 'sendfile':
-                $this->send_file($filename, $zipname);
-                break;
-            default:
-                return $errcode;
+        if ($download) {
+            $this->send_file($filename, $zipname);
+            die();
         }
         return $errcode;
     }
