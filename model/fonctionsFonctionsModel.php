@@ -991,25 +991,22 @@ BACKTRACE;
      */
     public function imagecreatefrom_x ($filename)
     {
-        $path_parts = pathinfo($filename);
-        $ext = (strtolower($path_parts['extension']));
-        switch ($ext) {
-        case 'jpg' :
-            return imagecreatefromjpeg($filename);
+        $type = exif_imagetype($filename);
+        switch ($type) {
+        case IMAGETYPE_JPEG :
+            $res = imagecreatefromjpeg($filename);
             break;
-        case 'jpeg' :
-            return imagecreatefromjpeg($filename);
+        case IMAGETYPE_GIF :
+            $res = imagecreatefromgif($filename);
             break;
-        case 'gif' :
-            return imagecreatefromgif($filename);
-            break;
-        case 'png' :
-            return imagecreatefrompng($filename);
+        case IMAGETYPE_PNG :
+            $res = imagecreatefrompng($filename);
             break;
         default :
-            return false;
+            $res = false;
             break;
         }
+        return $res;
     }
 
      /**
@@ -1076,7 +1073,10 @@ BACKTRACE;
         if ($canevaswidth || $canevasheight) {
             // recupere les dimensions de l'image
             list($width_orig, $height_orig) = getimagesize($filename);
-            $ratio_orig = $width_orig / $height_orig;
+            $ratio_orig = $canevaswidth / $canevasheight;
+            if ($height_orig) {
+                $ratio_orig = $width_orig / $height_orig;
+            }
             if ($interieur == 1) {
                 if ($canevasheight && (($canevaswidth / $canevasheight > $ratio_orig) || !$canevaswidth)) {
                     $canevasheight = round($canevaswidth / $ratio_orig);
@@ -1114,6 +1114,13 @@ BACKTRACE;
             }
             imagefill($image_p, 0, 0, $color);
             $image = $this->imagecreatefrom_x($filename);
+            if (!$image) {
+                $image = imagecreatetruecolor($cropwidth, $cropheight);
+                imagefilledrectangle($image, 0, 0, $cropwidth, $cropheight, $color);
+                $bg_color  = imagecolorallocate($image, 0, 0, 0);
+                $text_color  = imagecolorallocate($image, 255, 0, 0);
+                imagestring($image, 1, 5, 5, 'Error', $text_color);
+            }
             imagecopyresampled($image_p, $image, 0 - ($canevaswidth / 2) + ($cropwidth / 2), 0 - ($canevasheight / 2) + ($cropheight / 2), 0, 0, $canevaswidth, $canevasheight, $width_orig, $height_orig);
         } else {
             $image_p = $this->imagecreatefrom_x($filename);
