@@ -487,6 +487,7 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
      */
     public function redirect ($url, $code_http = 302)
     {
+        session_write_close();
         // si appel en CLI on affiche un message à la place
         if (!isset($_SERVER['SERVER_NAME'])) {
             echo ('Redirects with code ' . $code_http . ' to: ' . $url);
