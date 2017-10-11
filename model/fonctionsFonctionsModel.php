@@ -627,6 +627,9 @@ class fonctionsFonctionsModel extends fonctionsFonctionsModel_Parent
      */
     public function convert_bytesize($size, $way = 'bytestohuman', $powunit = 1000)
     {
+        if ($size == -1) {
+            return $size;
+        }
         $unites = array('b','k','m','g','t','p','e');
         $unite = strtolower(substr(preg_replace('/[0-9]*/', '', $size), 0, 1));
         $size = (int) $size;
