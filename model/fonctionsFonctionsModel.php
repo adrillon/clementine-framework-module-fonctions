@@ -1195,7 +1195,8 @@ BACKTRACE;
     {
         $elt = array_slice($list, 0, 1);
         if (count($elt)) {
-            list($key, $val) = each($elt);
+            $key = array_keys($elt)[0];
+            $val = $elt[$key];
             return $key;
         } else {
             if (__DEBUGABLE__) {
